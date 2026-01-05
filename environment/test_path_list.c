@@ -1,25 +1,24 @@
 #include <stdio.h>
 #include "path_list.h"
 
-path_t *build_path_list(void);
-void free_oath_list(path_t *head);
-
 int main(void)
 {
-	path_t *had = build_path_list();
-	path_t *tmp = head;
+	char **path_list;
+	int i = 0;
 
-	if (!head)
+	path_list = build_path_list();
+
+	if (!path_list)
 	{
 		printf("PATH not found\n");
-		return (0);
+		return (1);
 	}
 
-	while (tmp)
+	while (path_list[i])
 	{
-		printf("%s\n", tmp->dir);
-		tmp = tmp->next;
+		printf("%s\n", path_list[i]);
+		i++;
 	}
-	free_path_list(head);
+	free_path_list(path_list);
 	return (0);
 }

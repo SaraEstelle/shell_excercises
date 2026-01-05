@@ -1,49 +1,40 @@
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "path_list.h"
 
-char *_getenv(const char *name);
-
-path_t *build_path_list(void)
+char **build_path_list(void)
 {
-	char *path = _getenv("path");
-	char *start, *end;
-	path_t *head = NULL, *node, *tail = NULL;
+	char *path;
+	char *copy;
+	char **dirs;
+	int i = 0, count = 1;
 
+	path = getenv("PATH");
 	if (!path)
 		return (NULL);
+	/*count ':' */
+	for (i = 0; path[i]; i++)
+		if (path[i] == ':')
+			count++;
 
-	start = path;
-	while (*start)
+	dirs = malloc(sizeof(char *) * (count + 1));
+	if (!dirs)
+		return (NULL);
+
+	copy = strdup(path);
+	if (!copy)
+		return (NULL);
+
+	i = 0;
+	dirs[i] = strtok(copy, ":");
+	while (dirs[i])
 	{
-		end = start;
-		while (*end && *end != ':')
-
-			end++;
-
-		node = malloc(sizeof(path_t));
-		if (!node)
-			return (NULL);
-
-		node->dir = strndup(start, end - start);
-
-		if (!node->dir)
-		{
-			free(node);
-			return (NULL);
-		}
-		node->next = NULL;
-		if (!head)
-			head = node;
-		else
-			tail->next = node;
-
-		tail = node;
-
-		if (*end == ':')
-			end++;
-		start = end;
+		dirs[i] = strdup(dirs[i]);
+		i++;
+		dirs[i] = strtok(NULL, ":");
 	}
-	return (head);
+	dirs[i] = NULL;
+
+	free(copy);
+	return (dirs);
 }
